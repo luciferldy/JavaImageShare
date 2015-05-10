@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -67,11 +68,11 @@ public class UI extends JFrame{
 					files_number = Integer.parseInt(encode_number.getText());
 				} catch (Exception e2) {
 					// TODO: handle exception
-					e2.printStackTrace();
 					files_number = -1;
 				}
 				if (files_number <= 0) {
 					// 返回错误
+					JOptionPane.showMessageDialog(panel, "输入不合法", "提示", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				// 没有这个对象的话创建一个
@@ -80,6 +81,7 @@ public class UI extends JFrame{
 				}
 				handleImage.initOutNumber(files_number);
 				handleImage.cutImageIntoPieces();
+				JOptionPane.showMessageDialog(panel, "分解完成");
 			}
 		});
 		
@@ -105,11 +107,21 @@ public class UI extends JFrame{
 				}
 				// 
 				if (files_number <= 0) {
+					JOptionPane.showMessageDialog(panel, "输入不合法", "提示", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				// 
+				if(handleImage==null){
+					JOptionPane.showMessageDialog(panel, "还木有加密", "提示", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				if(!handleImage.checkFiles(files_number)) {
+					JOptionPane.showMessageDialog(panel, "实际图片数量少于合并数量", "提示", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				// 输入合并数量并开始合并
 				handleImage.initInNumber(files_number);
 				handleImage.mergeImagesToOne();
+				JOptionPane.showMessageDialog(panel, "合并完成");
 			}
 		});
 		
