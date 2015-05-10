@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class HandleImage {
@@ -15,9 +16,36 @@ public class HandleImage {
 	private ArrayList<FileOutputStream> outs;
 	private ArrayList<FileInputStream> ins;
 	private ArrayList<File> files;
+	private int private_key = 0;
 	
 	public HandleImage() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	// 生成密钥，每次加密前需要做
+	public void generateKey(){
+		private_key = (int)(Math.random()*15+1);
+	}
+	
+	// 获取密钥
+	public int getKey(){
+		return private_key;
+	}
+	
+	// 加密一位
+	public int encodeByte(int e){
+		int left = e >> 4;  // 获得左侧
+		int right = e & 15;  // 获得右侧
+		int result = (right << 4) + (left ^ private_key);
+		return result;
+	}
+	
+	// 解密一位
+	public int decodeByte(int d){
+		int right = d & 15;
+		int left = d >> 4;
+		int result = ((right ^ private_key) << 4) + left;
+		return result;
 	}
 	
 	public void initInNumber(int n){
@@ -106,7 +134,7 @@ public class HandleImage {
 	
 	// 将一个文件分成多份
 	public boolean cutImageIntoPieces(){
-		File file = new File(src_img_path);
+		File file = new File(src_img_path);		
 		InputStream in = null;
 		// 读文件
 		byte[] head = new byte[54];
@@ -129,9 +157,14 @@ public class HandleImage {
 			}
 			
 			int count = 0;
+			// 生成密钥
+			generateKey();
 			while ((byteread=in.read()) != -1) {
 				count = count % out_files_number;
 				// 分发到其余文件里
+				// 对这8位进行加密
+				byteread = encodeByte(byteread);
+				
 				for (int i = 0; i < out_files_number; i++) {
 					if (count == i) {
 						((FileOutputStream)outs.get(i)).write(byteread);
@@ -181,6 +214,9 @@ public class HandleImage {
 					// 位操作
 					byteread |= ((FileInputStream)ins.get(i)).read();
 				}
+				// 对byteread进行解密
+				byteread = decodeByte(byteread);
+				
 				out.write(byteread);
 			}
 			
