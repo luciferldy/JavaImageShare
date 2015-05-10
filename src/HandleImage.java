@@ -11,6 +11,7 @@ public class HandleImage {
 	private int out_files_number;
 	private final String src_img_path = "image/lena512.bmp";
 	private final String gen_img_path = "decode/result.bmp";
+	private final int BMP_HEAD = 54;
 	private ArrayList<FileOutputStream> outs;
 	private ArrayList<FileInputStream> ins;
 	private ArrayList<File> files;
@@ -171,6 +172,10 @@ public class HandleImage {
 			out = new FileOutputStream(dec_file);
 			byteread = ((FileInputStream)ins.get(0)).read(head);
 			out.write(head);
+			// 其余的图片指针位置移动
+			for (int i = 1; i < in_files_number; i++) {
+				((FileInputStream)ins.get(i)).skip(54);
+			}
 			while ((byteread = ((FileInputStream)ins.get(0)).read()) != -1) {
 				for (int i = 1; i < in_files_number; i++) {
 					// 位操作
