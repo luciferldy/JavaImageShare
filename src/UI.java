@@ -1,5 +1,3 @@
-import java.awt.Label;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,6 +11,10 @@ import javax.swing.JTextField;
 
 public class UI extends JFrame{
 	
+	/**
+	 * @author 连冬阳
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel panel;
 	private JButton encrypt;
 	private JButton decode;
@@ -114,8 +116,9 @@ public class UI extends JFrame{
 					JOptionPane.showMessageDialog(panel, "还木有加密", "提示", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				if(!handleImage.checkFiles(files_number)) {
-					JOptionPane.showMessageDialog(panel, "实际图片数量少于合并数量", "提示", JOptionPane.ERROR_MESSAGE);
+				files_number = handleImage.checkFiles(files_number);
+				if(files_number == 0) {
+					JOptionPane.showMessageDialog(panel, "不能为0", "提示", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				// 输入合并数量并开始合并

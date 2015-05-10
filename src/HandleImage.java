@@ -233,19 +233,19 @@ public class HandleImage {
 		}
 	}
 
-	public boolean checkFiles(int n){
+	public int checkFiles(int n){
 		File file = new File("generate");
 		// 是文件夹
 		if (file.isDirectory()) {
 			String[] files = file.list();
 			// 文件数量少于合并的数量
 			if (files.length < n) {
-				return false;
+				return files.length;
 			}
-			return true;
+			return n;
 		}
 		// 不是文件夹
-		return false;
+		return 0;
 	}
 	
 }
